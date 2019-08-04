@@ -38,7 +38,7 @@ def fetch_lyrics(song):
     Returns them inside a Lyrics object.
     '''
 
-    #
+    #Take the song input and substitutes spaces with '+' to concatenate to url
     song_words = song.split()
     song_searchterm = '+'.join(song_words)
     
@@ -50,16 +50,16 @@ def fetch_lyrics(song):
     html_search_string = search_response.text
     parsed_search_html = BeautifulSoup(html_search_string, 'html.parser')
 
-    #
+    #Navigates parsed HTML to extract first result from our query in the webpage's search
     search_result = parsed_search_html.findChild(class_='text-left visitedlyr').find('a')['href']
     lyrics_response = requests.get(search_result, 
         headers = {"Accept":"text/html"})
 
-    #Parses HTML string from AZlyrics.com with bs4    
+    #Parses HTML string from AZlyrics.com containing the lyrics with bs4    
     html_lyrics_string = lyrics_response.text
     parsed_lyrics_html = BeautifulSoup(html_lyrics_string, 'html.parser')
 
-    #
+    #Extracts the lyrics as a string
     fetched_lyrics = parsed_lyrics_html.find(class_='ringtone').findNext('div').get_text()
     
     return Lyrics(fetched_lyrics)
