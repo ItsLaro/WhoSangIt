@@ -32,13 +32,16 @@ def round_setup():
     entry_options = []
     artist_options = []
 
-    #Randomly picks 5 entries from billboard by shuffling it and stores object & artist inside previously defined lists
+    #Randomly picks 5 entries (no repeating artists) from billboard by shuffling it and stores object & artist inside previously defined lists
     shuffle(billboard_entries)
-    for index in range(1,6):
+    index = 0
+    while len(artist_options) < 5:
         entry_option = billboard_entries[index]
         artist_option = billboard_entries[index].artist
-        entry_options.append(entry_option)
-        artist_options.append(artist_option)
+        if artist_option not in artist_options:
+            entry_options.append(entry_option)
+            artist_options.append(artist_option)
+        index += 1
 
     #Selects on of the 5 entries & artist to have their lyrics displayed
     correct_entry = choice(entry_options)    
@@ -122,11 +125,11 @@ def game_round(player):
 
     #Adds points or strike for result of player selection
     if player_selection  == correct_selection:
-        print('Correct!')
+        print('Correct! +10 pts')
         player.add_points(10)
         input('\nPress <Enter> to continue...')
     else:
-        print("That's not right...")
+        print("That's not right...Strike!")
         player.add_strike()
         input('\nPress <Enter> to continue...')
 
