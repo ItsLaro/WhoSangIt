@@ -25,10 +25,20 @@ class Lyrics:
         '''
         Returns a random verse from the entire lyrics.
         '''
+        
         verse_list = self.lyrics.split('\n\n')
+        #Makes a shallow copy of verse list to use in scenario of really short verses
+        verse_list_copy = verse_list.copy()
+
+        #Removes short verses from the list (Only 120+ chars remain)
         for verse in verse_list:
             if len(verse) < 120:
-                 verse_list.remove(verse)
+                verse_list.remove(verse)
+                 
+        #Scenario with short verses (less than 120 chars), just takes the longest
+        if len(verse_list) == 1:
+            return max(verse_list_copy, key=len)
+   
         verse_num = randint(0,len(verse_list)-1)    
         return verse_list[verse_num].strip()
 
@@ -63,5 +73,3 @@ def fetch_lyrics(song):
     fetched_lyrics = parsed_lyrics_html.find(class_='ringtone').findNext('div').get_text()
     
     return Lyrics(fetched_lyrics)
-
-    
