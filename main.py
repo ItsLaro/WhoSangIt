@@ -5,7 +5,7 @@ import pyfiglet
 
 class Player:
     '''
-    A Player class for this game. Contains strikes (up to 3),
+    A Player class for this quiz. Contains strikes (up to 3),
     points (up to 100), and tracks allowance of the 2 hints.
     '''
     def __init__(self, strikes=0, points=0, hints='---'):
@@ -22,7 +22,6 @@ class Player:
     def use_hint(self):
         self.hints -= 1
     
-
 def round_setup():
     '''
     Make preparations for a new round.
@@ -51,7 +50,7 @@ def round_setup():
     song_query = correct_entry.pretty_print()
     verse = fetch_lyrics(song_query).rand_verse()
 
-    return entry_options, artist_options, correct_artist, verse
+    return entry_options, artist_options, correct_artist, correct_entry, verse
 
 def select_artist():
     '''
@@ -72,21 +71,63 @@ def select_artist():
         else:
             return selection
 
-def run_game():
+def quiz_opening():
+    '''
+    Bubble prints opening.
+    '''
 
-        #Bubble prints opening, winning screen and losing screen.
-        opening = pyfiglet.figlet_format("WHO  SANG  IT?")
-        winning_screen = pyfiglet.figlet_format("CONGRATULATIONS!") 
-        losing_screen = pyfiglet.figlet_format("GAME OVER...")
+    opening = pyfiglet.figlet_format("WHO  SANG  IT?")
 
-        print(opening)
-        input ('Press <Enter> to Start ')
+    print(opening)
+    input ('Press <Enter> to Start ')
+
+def quiz_mode():
+    '''
+    Requests user for song selection (Billboard chart to be fetched for quiz). 
+    '''
+    #Labels all the options to be given to the player
+    mode_options = {'Current Hot 100 Singles':'hot-100', 
+                    'Greatest Hot 100 Singles of All Times':'greatest-hot-100-singles',  
+                    "Top Songs from the 80's":'greatest-billboards-top-songs-80s', 
+                    'Greatest Hot Lating Songs':'greatest-hot-latin-songs',
+                    'Hot EDM Songs':'dance-electronic-songs'}
+    enumerated_mode_options = list(enumerate(mode_options, start=1))
+
+    for option in enumerated_mode_options:
+        print(f'[{option[0]}] {option[1]}')
+
+    while True:
+        try:
+            selection = int(input("Select song collection: "))
+            if selection > len(enumerated_mode_options):
+                raise IndexError
+        except IndexError:
+            print("Invalid Input. Please select song collection by inputting their associated number.")
+            continue
+        except ValueError:
+            print("Invalid Input. Please select song collection by inputting their associated number.")
+            continue
+        else:
+            break
+    
+    mode_option = enumerated_mode_options[selection-1]
+    mode_key = mode_option[1]
+    mode_value = mode_options[mode_key]
+
+    return mode_value
+    
+
+def run_quiz():
 
         #Instantiates a player
         P1 = Player()
 
         playing = True
         round_number = 1
+
+        #Bubble prints winning and losing screen
+        winning_screen = pyfiglet.figlet_format("CONGRATULATIONS!") 
+        losing_screen = pyfiglet.figlet_format("GAME OVER...")
 
         #Progresses through rounds, checking if end-game conditions have been met
         while playing:
@@ -100,12 +141,12 @@ def run_game():
                 print(f'\nROUND-{round_number}')
                 print(P1, end='\n\n')
                 round_number += 1
-                game_round(P1)
+                quiz_round(P1)
 
-def game_round(player):
+def quiz_round(player):
     
     #Sets up a new round
-    entry_options, artist_options, correct_artist, verse = round_setup()
+    entry_options, artist_options, correct_artist, correct_entry, verse = round_setup()
     
     #Determines number pertaining to the correct answer
     correct_selection = artist_options.index(correct_artist) + 1
@@ -118,7 +159,7 @@ def game_round(player):
     for item in entry_options:
         print(f'[{selection_number}] {item.artist}')
         selection_number += 1
-    print('---Input [6] for a hint---')
+    print(f'---Input {selection_number} for a hint---')
 
     #Request for input
     player_selection = select_artist()
@@ -131,18 +172,17 @@ def game_round(player):
     else:
         print("That's not right...Strike!")
         player.add_strike()
+        print(f'This is billboard entry {correct_entry}. The correct answer was: [{correct_selection}] ')
         input('\nPress <Enter> to continue...')
+
 
 if __name__ == "__main__": 
 
     while True:
-        billboard_entries = billboard('greatest-hot-100-singles')
-        #dance-electronic-songs'
-        #'greatest-hot-100-singles'
-        #'greatest-billboards-top-songs-80s'
-        #'greatest-hot-latin-songs'
-        #'pop-songs'
-        run_game()
+        quiz_opening()
+        chart = quiz_mode()
+        billboard_entries = billboard(chart)
+        run_quiz()
         replay = input("Play again? <yes/no>")
         try:
             if replay.lower()[0] == 'y':
