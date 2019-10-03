@@ -31,24 +31,34 @@ def round_setup():
     entry_options = []
     artist_options = []
 
-    #Randomly picks 5 entries (no repeating artists) from billboard by shuffling it and stores object & artist inside previously defined lists
-    shuffle(billboard_entries)
-    index = 0
-    while len(artist_options) < 5:
-        entry_option = billboard_entries[index]
-        artist_option = billboard_entries[index].artist
-        if artist_option not in artist_options:
-            entry_options.append(entry_option)
-            artist_options.append(artist_option)
-        index += 1
+    #While-loop ensures no exit from round_setup until lyrics have succesfully being fetched.
+    while True:
 
-    #Selects on of the 5 entries & artist to have their lyrics displayed
-    correct_entry = choice(entry_options)    
-    correct_artist = correct_entry.artist
+        #Randomly picks 5 entries (no repeating artists) from billboard by shuffling it and stores object & artist inside previously defined lists
+        shuffle(billboard_entries)
+        index = 0
+        while len(artist_options) < 5:
+            entry_option = billboard_entries[index]
+            artist_option = billboard_entries[index].artist
+            if artist_option not in artist_options:
+                entry_options.append(entry_option)
+                artist_options.append(artist_option)
+            index += 1
 
-    #Fetches the random verse from the lyrics from the selected entry
-    song_query = correct_entry.pretty_print()
-    verse = fetch_lyrics(song_query).rand_verse()
+        try:
+            #Selects on of the 5 entries & artist to have their lyrics displayed
+            correct_entry = choice(entry_options)    
+            correct_artist = correct_entry.artist
+
+            #Fetches the random verse from the lyrics from the selected entry
+            song_query = correct_entry.pretty_print()
+            verse = fetch_lyrics(song_query).rand_verse()
+        except AttributeError:
+            #Happens when song lyrics were not available.
+            pass
+        else:
+            #When lyrics have been obtained and round set up is succesful. Breaks out of while-loop.
+            break
 
     return entry_options, artist_options, correct_artist, correct_entry, verse
 
