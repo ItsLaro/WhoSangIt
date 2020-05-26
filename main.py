@@ -1,5 +1,5 @@
-from lyrics_scrapper import fetch_lyrics
-from billboard_scrapper import Billboard_Entry, billboard
+import lyrics_scrapper 
+import billboard_scrapper
 from random import randint, shuffle, choice
 import pyfiglet
 
@@ -52,7 +52,7 @@ def round_setup():
 
             #Fetches the random verse from the lyrics from the selected entry
             song_query = correct_entry.pretty_print()
-            verse = fetch_lyrics(song_query).rand_verse()
+            verse = lyrics_scrapper.fetch_lyrics(song_query).rand_verse()
         except AttributeError:
             #Happens when song lyrics were not available.
             pass
@@ -99,7 +99,7 @@ def quiz_mode():
     mode_options = {'Current Hot 100 Singles':'hot-100', 
                     'Greatest Hot 100 Singles of All Times':'greatest-hot-100-singles',  
                     "Top Songs from the 80's":'greatest-billboards-top-songs-80s', 
-                    'Greatest Hot Lating Songs':'greatest-hot-latin-songs',
+                    'Greatest Hot Latin Songs':'greatest-hot-latin-songs',
                     'Hot EDM Songs':'dance-electronic-songs'}
     enumerated_mode_options = list(enumerate(mode_options, start=1))
 
@@ -191,7 +191,7 @@ if __name__ == "__main__":
     while True:
         quiz_opening()
         chart = quiz_mode()
-        billboard_entries = billboard(chart)
+        billboard_entries = billboard_scrapper.fetch_billboard(chart)
         run_quiz()
         replay = input("Play again? <yes/no>")
         try:

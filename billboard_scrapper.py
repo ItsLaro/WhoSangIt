@@ -21,6 +21,19 @@ class Billboard_Entry:
         pretty_artist = self.artist.split(' ')[0]
         return f'{self.title} by {pretty_artist}'
 
+class Billboard:
+    '''
+    Billboard object containing all the billboard entries
+    '''
+
+    def __init__(self, entries):
+        self.entries = entries
+        self.chart_name = entries[0]
+    def __str__(self):
+        string = ""
+        for entry in self.entries:
+            string += (str(entry) + "\n" )
+        return string
 
 class Billboard_Error(Exception):
     '''
@@ -28,7 +41,7 @@ class Billboard_Error(Exception):
     '''
     pass
 
-def billboard(chart='hot-100'):
+def fetch_billboard(chart='greatest-hot-100-singles'):
     '''
     Fetches billboard from https://www.billboard.com.
     Defaults to The Top Hot 100 Billboard, but takes in a string of any Billboard
@@ -70,7 +83,8 @@ def billboard(chart='hot-100'):
     return entries
 
 if __name__ == '__main__':
-    entries = billboard()
-    for entry in entries:
-        print(entry)
+    entries = fetch_billboard()
+    billboard = Billboard(entries)
+    print(billboard)
+
 
