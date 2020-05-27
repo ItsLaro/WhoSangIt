@@ -3,6 +3,10 @@ import billboard_scrapper
 from random import randint, shuffle, choice
 import pyfiglet
 
+#################################################
+# GAME IMPLEMENTATION THAT RUNS ON THE TERMINAL #
+#################################################
+
 class Player:
     '''
     A Player class for this quiz. Contains strikes (up to 3),

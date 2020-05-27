@@ -1,1 +1,1 @@
-entry
+wikipedia

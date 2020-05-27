@@ -46,6 +46,9 @@ def fetch_lyrics(song):
     '''
     Fetches lyrics from https://www.azlyrics.com.
     Returns them inside a Lyrics object.
+    TODO: 
+        Better selection methodology to increase accuracy. Currently, we pick the first result out of the AZLyrics search result. 
+        Regex could be implemented and take into account the actual artist as a separate element.
     '''
 
     #Take the song input and substitutes spaces with '+' to concatenate to url

@@ -47,6 +47,8 @@ def fetch_billboard(chart='greatest-hot-100-singles'):
     Defaults to The Top Hot 100 Billboard, but takes in a string of any Billboard
     chart in the form of '/chart_x'.
     Returns list with chart tile at index [0] and Billboard_Entry objects.
+    TODO: 
+    The Hot-100 page seems to have changed and therefore turned 'unscrapable'. Needs to be updated.
     '''
     url = 'https://www.billboard.com/charts/'+chart
     response = requests.get(url, 
