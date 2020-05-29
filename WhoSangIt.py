@@ -66,15 +66,19 @@ def round_setup():
 
     return entry_options, artist_options, correct_artist, correct_entry, verse
 
-def select_artist():
+def select_artist(number_choices):
     '''
     Allows the user to make their selection based on the 5 options displayed
     while handling errors.
     '''
     while True:
+        '''
+        TODO: Once hints are implemented, option 6 should be enabled by changing
+        `if selection >= number_choices:` to `if selection > number_choices:` on line marked by #TODO
+        '''
         try:
             selection = int(input("Select from the following numbered artists: "))
-            if selection > 6:
+            if selection >= number_choices: #TODO
                 raise IndexError
         except IndexError:
             print("Invalid Input. Please select an artist by inputting their associated number.")
@@ -173,10 +177,10 @@ def quiz_round(player):
     for item in entry_options:
         print(f'[{selection_number}] {item.artist}')
         selection_number += 1
-    print(f'---Input {selection_number} for a hint---')
+    print(f'---Input {selection_number} for a hint--- (Coming Soon!)')
 
     #Request for input
-    player_selection = select_artist()
+    player_selection = select_artist(selection_number)
 
     #Adds points or strike for result of player selection
     if player_selection  == correct_selection:

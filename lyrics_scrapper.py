@@ -38,8 +38,10 @@ class Lyrics:
         #Scenario with short verses (less than 120 chars), just takes the longest
         if len(verse_list) == 1:
             return max(verse_list_copy, key=len)
-   
-        verse_num = randint(0,len(verse_list)-1)    
+
+        if len(verse_list) > 1:
+            verse_num = randint(0,len(verse_list)-1)    
+        
         return verse_list[verse_num].strip()
 
 def fetch_lyrics(song):
