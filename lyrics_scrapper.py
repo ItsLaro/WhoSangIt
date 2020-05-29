@@ -15,7 +15,7 @@ class Lyrics:
 
     def verses(self):
         '''
-        Returns the lyrics in a list containing each verse a
+        Returns the lyrics in a list containing each verse as a
         separate string. 
         '''
         verse_list = self.lyrics.split('\n\n')
@@ -79,7 +79,7 @@ def fetch_lyrics(song):
         return Lyrics(fetched_lyrics)
 
     except:
-        return None
+        return Lyrics("")
 
 if __name__ == '__main__':
     song_name = input("\nEnter song name to fetch lyrics for:")
