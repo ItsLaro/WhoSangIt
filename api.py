@@ -18,14 +18,19 @@ def home():
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return "<h1>404</h1><p>That music chat could not be found.</p>", 404
+    return "<h1>404</h1><p>That music chart could not be found.</p>", 404
 
-@app.route('/api/v1/chart', defaults={'name' : 'hot-100'},  methods=['GET'])
+@app.route('/api/v1/chart',  methods=['GET'])
 def api_filter():
-    print("Request made, acquiring billboard with lyrics.\n")
+    print("Request has been made.")
     
     query_parameters = request.args
     chart_name = query_parameters.get('name')
+    if chart_name is None:
+        #No argument defaults to main chart: The Hot-100 Billboard.
+        chart_name = "hot-100"
+
+    # Query parameter is fed through the route in the format of 'chart?name=<chart_name>'
     # Some Popular Charts & corresponding chart_name path:
     #
     # Current Hot 100 Singles (Default):      'hot-100', 
@@ -33,16 +38,26 @@ def api_filter():
     # Top Songs from the 80's:                'greatest-billboards-top-songs-80s'
     # Greatest Hot Latin Songs:               'greatest-hot-latin-songs'
     # Hot EDM Songs:                          'dance-electronic-songs'
-
-    result = {}
+    
+    result = {} #Python dictionary to store key-value pairs (since data will be sent as JSON)
+    
+    print("Acquiring billboard chart.")
     billboard_entries = fetch_billboard(chart_name)
+
+    print("Fetching Lyrics & bulding entries:\n")
     for i in range(len(billboard_entries)):
         result[i] = {"rank" : billboard_entries[i].rank,
                     "title": billboard_entries[i].title,
                     "artist": billboard_entries[i].artist,
                     "lyrics": fetch_lyrics(billboard_entries[i].pretty_print()).verses()
                     }
-        sleep(3) #throttles the crawling speed to avoid getting IP-blocked 
+        
+        ###### LOG ######
+        print(f'__Entry #{i}__')
+        print(result[i])
+
+        sleep(10) #throttles the crawling speed to avoid getting IP-blocked 
+    
     return jsonify(result)
 
 app.run()
