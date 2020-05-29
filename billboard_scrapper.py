@@ -68,7 +68,8 @@ def fetch_billboard(chart='hot-100'):
     #entries.append(chart_title)
 
     #Iterates over each entry on the billboard, creating a Entry Object and appending it to entries list
-    if chart =='hot-100': #main chart has a different DOM structure.
+    if chart =='hot-100': 
+        #Main 100-Billboard chart has a different DOM structure than the rest.
 
         ranks = parsed_html.find_all(class_='chart-element__rank__number')
         titles = parsed_html.find_all(class_='chart-element__information__song')
@@ -88,7 +89,8 @@ def fetch_billboard(chart='hot-100'):
             entry = Billboard_Entry(rank, title, artist)
             entries.append(entry)  
 
-    else: #All other charts are seemingly structured the same.
+    else: 
+        #All other charts are seemingly structured the same.
        
         for item in parsed_html.find_all(class_='chart-list-item'):
             try:
