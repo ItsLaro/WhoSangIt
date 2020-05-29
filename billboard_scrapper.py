@@ -41,7 +41,7 @@ class Billboard_Error(Exception):
     '''
     pass
 
-def fetch_billboard(chart='greatest-hot-100-singles'):
+def fetch_billboard(chart='hot-100'):
     '''
     Fetches billboard from https://www.billboard.com.
     Defaults to The Top Hot 100 Billboard, but takes in a string of any Billboard
@@ -50,7 +50,7 @@ def fetch_billboard(chart='greatest-hot-100-singles'):
     TODO: 
     The Hot-100 page seems to have changed and therefore turned 'unscrapable'. Needs to be updated.
     '''
-    url = 'https://www.billboard.com/charts/'+chart
+    url = 'https://www.billboard.com/charts/' + chart
     response = requests.get(url, 
         headers = {"Accept":"text/html"})
 
@@ -64,23 +64,45 @@ def fetch_billboard(chart='greatest-hot-100-singles'):
     #empty list to allocate all entry objects created from the info fetched
     entries = [] 
 
-    #Chart title stored at index 0 inside entries
-    entries.append(chart_title) 
+    #Line below is able to append chart title to index position 0 on resulting array
+    #entries.append(chart_title)
 
     #Iterates over each entry on the billboard, creating a Entry Object and appending it to entries list
-    for item in parsed_html.find_all(class_='chart-list-item'):
-        try:
-            rank = int(item['data-rank'].strip())
-            title = item['data-title'].strip()
-            artist = item['data-artist'].strip() or ''
-            if artist == '':
-                artist = 'Unknown'
-        except:
-            message = "Failed to parse entry"
-            raise Billboard_Error(message)
-        
-        entry = Billboard_Entry(rank, title, artist)
-        entries.append(entry)
+    if chart =='hot-100': #main chart has a different DOM structure.
+
+        ranks = parsed_html.find_all(class_='chart-element__rank__number')
+        titles = parsed_html.find_all(class_='chart-element__information__song')
+        artists = parsed_html.find_all(class_='chart-element__information__artist')
+
+        for i in range(len(parsed_html.find_all(class_='chart-list__element'))):
+            try:
+                rank = int(ranks[i].get_text().strip())
+                title = titles[i].get_text().strip()
+                artist = artists[i].get_text().strip() or ''
+                if artist == '':
+                    artist = 'Unknown'
+            except:
+                message = "Failed to parse entry: " + str(item)
+                raise Billboard_Error(message)
+            
+            entry = Billboard_Entry(rank, title, artist)
+            entries.append(entry)  
+
+    else: #All other charts are seemingly structured the same.
+       
+        for item in parsed_html.find_all(class_='chart-list-item'):
+            try:
+                rank = int(item['data-rank'].strip())
+                title = item['data-title'].strip()
+                artist = item['data-artist'].strip() or ''
+                if artist == '':
+                    artist = 'Unknown'
+            except:
+                message = "Failed to parse entry"
+                raise Billboard_Error(message)
+            
+            entry = Billboard_Entry(rank, title, artist)
+            entries.append(entry)
 
     return entries
 
