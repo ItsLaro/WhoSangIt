@@ -25,5 +25,7 @@ def fetch_bio(artist_name):
     
     return artistBio
 
-
-print(fetch_bio("Childish Gambino"))
+if __name__ == '__main__':
+    artist = input("Provide name of artist to fetch bio for: ")
+    bio = fetch_bio(artist)
+    print(bio)
